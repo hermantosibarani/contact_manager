@@ -1,6 +1,6 @@
 @extends('layout.backend.app',[
 	'title' => 'Welcome',
-	'pageTitle' => 'Dashboard',
+	'pageTitle' => 'Assigment',
 ])
 @section('content')
 <style type="text/css">

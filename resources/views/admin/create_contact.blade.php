@@ -327,7 +327,7 @@
                 $('select[name="ass_agent"]').html(opt);
                 $('#mAss').modal('show');
                 $('#ass_id').val(id);
-                $('#mAss .modal-title').html('Assign contract for '+name);
+                $('#mAss .modal-title').html('Assign agent for '+name);
             },
             error:function(err) {
                 console.log(err)

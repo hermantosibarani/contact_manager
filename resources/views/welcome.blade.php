@@ -16,11 +16,10 @@
         <a class="nav-link" href="../agent/">Home <span class="sr-only">(current)</span></a>
       </li>
       <li class="nav-item">
-      	@auth
-      		<a class="nav-link" href="{{ route('admin') }}">Admin</a>
-      	@else
-      		<a class="nav-link" href="{{ route('login') }}">Login</a>
-      	@endauth
+        <a class="nav-link" href="{{ route('admin') }}">Admin</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{{ route('user') }}">User</a>
       </li>
     </ul>
     <span class="navbar-text">
