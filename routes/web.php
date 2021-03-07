@@ -23,12 +23,27 @@ use App\Http\Controllers\User\ProfileController;
 |
 */
 
-Route::view('/','welcome');
+Route::view('/','welcome')->name('welcome')->middleware('auth');
 
 
 Route::group(['namespace' => 'Admin','middleware' => 'auth','prefix' => 'admin'],function(){
 	
 	Route::get('/',[AdminController::class,'index'])->name('admin')->middleware(['can:admin']);
+
+
+	Route::get('create_contact',[AdminController::class,'create_contact'])->name('create_contact')->middleware(['can:admin']);
+
+	Route::get('datatables_contact',[AdminController::class,'datatables_contact'])->name('datatables_contact')->middleware(['can:admin']);
+
+	Route::post('storecontact',[AdminController::class,'storecontact'])->name('storecontact')->middleware(['can:admin']);
+
+	Route::post('assigncontact',[AdminController::class,'assigncontact'])->name('assigncontact')->middleware(['can:admin']);
+
+	Route::post('updatecontact',[AdminController::class,'updatecontact'])->name('updatecontact')->middleware(['can:admin']);
+
+	Route::post('deletecontact',[AdminController::class,'deletecontact'])->name('deletecontact')->middleware(['can:admin']);
+
+	Route::get('get_list_user',[AdminController::class,'get_list_user'])->name('get_list_user')->middleware(['can:admin']);
 
 	//Route Rescource
 	Route::resource('/user','UserController')->middleware(['can:admin']);

@@ -1,6 +1,6 @@
 @extends('layout.backend.app',[
-    'title' => 'Dashboard',
-    'pageTitle' => 'Dashboard'
+    'title' => 'Create Contact',
+    'pageTitle' => 'Create Contact'
 ])
 @section('content')
 <!-- Content Row -->
