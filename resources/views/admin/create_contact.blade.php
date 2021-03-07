@@ -12,23 +12,32 @@
         cursor: pointer;
         text-decoration: none;
     }
-    table.dataTable th {
+    #table_contact.dataTable th {
       word-break: keep-all;
       white-space: nowrap;
     }
 
-    table.dataTable td {
+    #table_contact.dataTable td {
       word-break: keep-all;
       white-space: nowrap;
     }
-    table.dataTable th:nth-child(2) {
+    #table_contact.dataTable th:nth-child(2) {
       width: 90px!important;
       max-width: 90px;
     }
-    table.dataTable td:nth-child(2) {
+    #table_contact.dataTable td:nth-child(2) {
       width: 90px!important;
       max-width: 90px;
     }
+
+    @media (min-width: 576px){
+        .modal-dialog {
+            max-width: 700px!important;
+        }
+    }
+
+
+    
     
 </style>
 <div class="float-right">
@@ -154,12 +163,37 @@
         </div>
     </div>
 </div>
+
+<div class="modal fade" id="mHistory" data-backdrop="static" style="width: 100%;margin-left: 0%;">
+    <div class="modal-dialog modal-base-dialog">
+        <div class="modal-content main-modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><b>History</b></h5>
+                <button type="button" class="close" aria-label="Close" data-dismiss="modal">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <table class="table table-striped display" id="table_history" width="100%" cellspacing="0">
+                    <thead>
+                        <th>No</th>
+                        <th>Action</th>
+                        <th>Remark</th>                      
+                        <th>Date</th>
+                    </thead>
+                    <tbody>
+                        
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
 @stop
 
 <script type="text/javascript">
     document.addEventListener("DOMContentLoaded", function(event) { 
         datatables();
-        
 
     });
 
@@ -304,7 +338,9 @@
     function ass_agent() {
         var data = {};
             data['id']     = $('#ass_id').val();
+            data['name']   = $('#ass_agent option:selected').text();
             data['agent']  = $('#ass_agent').val();
+            console.log(data);
         $.ajax({
             url:"{{ route('assigncontact') }}",
             type:"POST",
@@ -463,6 +499,52 @@
                 }, 800)
             } 
         })
+    }
+
+    function history(id){
+        
+        if ( $.fn.DataTable.isDataTable( "#table_history" ) ) {
+            $("#table_history").DataTable().destroy();
+        }
+
+        var table = $("#table_history").DataTable({
+            ajax: {"url": "{{ url('admin/history')}}/"+id},
+
+            "order": [],
+
+            "columnDefs": [
+                { "orderable": false, "targets": 0 },
+                { targets: -1, className: 'dt-body-center' },
+            ], 
+            "columns": [
+                { "data": "no","orderable": false },
+                { "data": "action"},
+                { "data": "remark" },
+                { "data": "created_at" },
+            ],
+            fixedColumns: false,
+            pageLength:25,
+            scrollY:        400,
+            scrollX:        true,
+            scrollCollapse: true,
+            dom:"<'myfilter'f>Bt<'mylength'l>ip",
+            buttons: [
+                {
+                    className: "btn btn-primary",
+                    text: 'Export',
+                    extend: 'excelHtml5',
+                    title: 'Bast Cash In Database',
+                    exportOptions: {
+                        columns: [ 0]
+                    }
+                },
+            ],     
+            rowCallback: function(nRow, aData, iDisplayIndex) {
+                
+            }
+        });
+
+        $('#mHistory').modal('show');
     }
     
 </script>

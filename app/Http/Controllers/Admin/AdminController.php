@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Contact;
 use App\Models\User;
+use App\Models\History;
 use Carbon\Carbon;
 use Auth;
 
@@ -60,18 +61,24 @@ class AdminController extends Controller
         try {
 
             $data = [
-                'name'     => $contact['name'],
-                'phone'     => $contact['phone'],
-                'email'     => $contact['email'],
-                'status'     => 'Uncontacted',                
-                'created_by'            => Auth::user()->id,
+                'name'          => $contact['name'],
+                'phone'         => $contact['phone'],
+                'email'         => $contact['email'],
+                'status'        => 'Uncontacted',                
+                'created_by'    => Auth::user()->id,
             ];
 
             // return $data;
             $insert = Contact::create($data);
             
+            $data_history = [
+                'contact_id' => $insert->id,
+                'action'     => 'Create Contact',
+                'remark'     => '',             
+                'created_by' => Auth::user()->id,
+            ];
             //history
-            // $actionflow = self::action_flow($bast,$remark);
+            $history = self::add_history($data_history);
 
             
             $msg = array('TYPE' => 'S', 'MESSAGE' => 'Contact Saved');
@@ -109,7 +116,8 @@ class AdminController extends Controller
         $contact    = $input['data'];
         $agent      = $contact['agent'];
         $id         = $contact['id'];
-        // return $agent;
+        $name       = $contact['name'];
+        // return $name;
         try {
 
             // return $data;
@@ -119,7 +127,14 @@ class AdminController extends Controller
             $update = Contact::where('id', $id)->update($data);
             
             //history
-            // $actionflow = self::action_flow($bast,$remark);
+            $data_history = [
+                'contact_id' => $id,
+                'action'     => 'Assign Contact to '.$name,
+                'remark'     => '',             
+                'created_by' => Auth::user()->id,
+            ];
+
+            $history = self::add_history($data_history);
 
             
             $msg = array('TYPE' => 'S', 'MESSAGE' => 'Contact Assigned');
@@ -142,7 +157,14 @@ class AdminController extends Controller
             $update = Contact::where('id', $id_contact)->update($contact);
             
             //history
-            // $actionflow = self::action_flow($bast,$remark);
+            $data_history = [
+                'contact_id' => $id_contact,
+                'action'     => 'Update Contact',
+                'remark'     => '',             
+                'created_by' => Auth::user()->id,
+            ];
+
+            $history = self::add_history($data_history);
 
             
             $msg = array('TYPE' => 'S', 'MESSAGE' => 'Contact Updated');
@@ -162,11 +184,7 @@ class AdminController extends Controller
         try {
 
             $delete = Contact::where('id', $id)->delete();
-            
-            //history
-            // $actionflow = self::action_flow($bast,$remark);
-
-            
+                        
             $msg = array('TYPE' => 'S', 'MESSAGE' => 'Contact Deleted');
             $result = ['code' => 200, 'data' => $msg];
 
@@ -175,6 +193,40 @@ class AdminController extends Controller
             $error =  $e->getMessage() . " " . $e->getFile() . " " . $e->getLine();
             return response()->json($error);
         }
+    }
+
+    public function add_history($data){
+       
+        $insert = History::create($data);
+
+    }
+
+    public function get_history($id){
+       
+       $contact = History::with('user')->where('contact_id',$id)->orderBy('created_at','desc');
+        // return $contact->get();
+        $r = 0;
+        $val = [];
+        if ($contact->count()>0) {
+            foreach ($contact->get() as $key => $row) {
+                
+                $val[] = [
+                    'no' => $r+1,
+                    'action' => $row->action,
+                    'remark' => $row->remark,
+                    'created_at' => Carbon::parse($row->created_at)->format('Y-m-d'),
+                ];
+                $r++;
+            }
+        } else {
+            $val = [];
+        }
+        $final['draw'] = 1;
+        $final['recordsTotal'] = $r;
+        $final['recordsFiltered'] = $r;
+        $final['data'] = $val;
+        return response()->json($final, 200);
+
     }
 
 }

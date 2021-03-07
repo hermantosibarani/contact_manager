@@ -45,6 +45,8 @@ Route::group(['namespace' => 'Admin','middleware' => 'auth','prefix' => 'admin']
 
 	Route::get('get_list_user',[AdminController::class,'get_list_user'])->name('get_list_user')->middleware(['can:admin']);
 
+	Route::get('history/{id}',[AdminController::class,'get_history'])->name('history')->middleware(['can:admin']);
+
 	//Route Rescource
 	Route::resource('/user','UserController')->middleware(['can:admin']);
 
@@ -68,6 +70,9 @@ Route::group(['namespace' => 'User','middleware' => 'auth' ,'prefix' => 'user'],
 	Route::get('/',[UserController::class,'index'])->name('user');
 	Route::get('/profile',[ProfileController::class,'index'])->name('profile');
 	Route::patch('/profile/update/{user}',[ProfileController::class,'update'])->name('profile.update');
+
+	Route::get('datatables_user_contact',[UserController::class,'datatables_user_contact'])->name('datatables_user_contact');
+	Route::post('user_updatecontact',[UserController::class,'user_updatecontact'])->name('user_updatecontact');
 });
 
 Route::group(['namespace' => 'Auth','middleware' => 'guest'],function(){

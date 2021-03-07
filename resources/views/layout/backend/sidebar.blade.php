@@ -16,12 +16,12 @@
     <li class="nav-item">
         <a class="nav-link" href="{{ route('create_contact') }}">
             <i class="fas fa-fw fa-tachometer-alt"></i>
-            <span>Create Contact</span>
+            <span>Manage Contact</span>
         </a>
-        <a class="nav-link" href="{{ route('admin') }}">
+        <!-- <a class="nav-link" href="{{ route('admin') }}">
             <i class="fas fa-fw fa-tachometer-alt"></i>
             <span>Assign Contact</span>
-        </a>
+        </a> -->
     </li>
     @endcan
 
